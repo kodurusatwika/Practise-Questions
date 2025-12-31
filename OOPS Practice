@@ -1,0 +1,197 @@
+OOPs Pratice
+-----------
+1) You are designing a BankAccount class with fields of accountNumber, balance, and accountHolderName.
+Should balance be public or not? Justify
+> If balance is public, anyone can directly modify it from outside the class, which is unsafe in a banking system.  
+   Keeping balance private protects account data and avoids invalid changes like negative balance.
+
+How would you control deposits and withdrawals using methods?
+Deposits and withdrawals are handled using methods instead of direct access
+- Deposit method checks that the amount is greater than zero.
+- Withdraw method checks that the amount is valid and sufficient balance is available.
+This ensures money is added or removed in a controlled way.
+
+How does encapsulation help enforce banking rules?
+Encapsulation hides sensitive data like balance and allows access only through methods.  
+This helps enforce rules, improves security, and prevents misuse of account data.
+
+Code
+----
+public class BankAccount {
+
+    private String accountNumber;
+    private double balance;
+    private String accountHolderName;
+
+    public BankAccount(String accountNumber, String accountHolderName, double balance) {
+        this.accountNumber = accountNumber;
+        this.accountHolderName = accountHolderName;
+        this.balance = balance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("Deposit successful. Balance: " + balance);
+        } else {
+            System.out.println("Invalid deposit amount.");
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            System.out.println("Withdrawal successful. Balance: " + balance);
+        } else {
+            System.out.println("Invalid withdrawal or insufficient balance.");
+        }
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+  
+    public static void main(String[] args) {
+
+        BankAccount account = new BankAccount("101", "Satwika", 5000);
+
+        account.deposit(2000);
+        account.withdraw(1500);
+        account.withdraw(8000);
+        account.deposit(-500);
+
+        System.out.println("Final Balance: " + account.getBalance());
+    }
+}
+
+2)A withdrawal fails due to insufficient balance.
+Would you use a checked or unchecked exception?
+> I would use an unchecked exception.
+  Insufficient balance is not a system error.
+  The application is working correctly, but the withdrawal cannot be completed because there is not enough money in the account.
+  This is a business rule problem, so unchecked exception is more suitable.
+
+Why is exception handling important?
+Exception handling is important so the program does not stop suddenly.
+  In a banking application:
+   > Errors can happen during transactions
+   > The program should handle them safely
+   > The user should get a proper message instead of the app crashing
+   > It helps keep the application working smoothly.
+
+How does a custom exception improve code clarity?
+A custom exception is something we create ourselves for our own problem.
+
+When we use a name like InsufficientBalanceException, it clearly shows the reason for failure.
+So when someone reads the code, they don’t have to think or search to understand what went wrong.
+Because of this, the code becomes easy to read, understand, and manage.
+
+3) An e-commerce system supports PhysicalProduct and DigitalProduct.
+What common behaviors would you abstract?
+Both PhysicalProduct and DigitalProduct are products, so they share some common things.
+
+- Both have a product name
+- Both have a price
+- Both can apply discount
+- Both calculate final price
+
+These behaviors are common and can be kept in one place instead of repeating them.
+
+Would you use an abstract class or interface?
+I would use an abstract class.
+Because both products share common data like name and price, and also common behavior.
+An abstract class allows us to store this shared data and logic together.
+Only specific behavior like delivery for physical products or download for digital products can be handled separately.
+
+4) What is polymorphism in Java?
+Polymorphism means one method name can behave differently based on the object that is calling it.
+In simple words, the same action gives different results.
+
+Example: calculateSalary() method behaves differently for different employees.
+Explain compile-time vs runtime polymorphism.
+
+Compile-time polymorphism:
+- It happens at compile time
+- Achieved using method overloading
+- Same method name but different parameters
+- Decision is made during compilation
+
+Runtime polymorphism:
+- It happens at runtime
+- Achieved using method overriding
+- Method call is decided based on object type
+- Decision is made while the program is running
+
+Which one is achieved using method overriding?
+Runtime polymorphism is achieved using method overriding.
+
+Why is runtime polymorphism important in real applications?
+Runtime polymorphism is important because:
+- It allows flexibility in code
+- Same method call works for different objects
+- Makes code easy to extend and maintain
+- Used heavily in real applications like payment systems, employee systems, etc.
+
+What does method overriding mean?
+Method overriding means a child class provides its own implementation of a method that already exists in the parent class.
+The method name and parameters remain the same, but the behavior changes.
+
+Example:
+- Employee has calculateSalary()
+- PermanentEmployee calculates salary differently
+- ContractEmployee calculates salary differently
+
+Hands-on example
+-----------------
+class Employee {
+    double calculateSalary() {
+        return 30000;
+    }
+}
+
+class FullTimeEmployee extends Employee {
+    @Override
+    double calculateSalary() {
+        return 50000;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Employee emp = new FullTimeEmployee();
+        System.out.println(emp.calculateSalary());
+    }
+}
+Even though the reference type is Employee, the object created is FullTimeEmployee.
+At runtime, the child class method calculateSalary() is called.
+So the output will be 50000.
+This is called runtime polymorphism.
+
+Rules for method overriding in Java
+> Method name must be the same
+> Method parameters must be the same
+> Return type must be the same or compatible
+> Access level cannot be more restrictive than the parent class method
+> Overriding happens only between parent and child classes
+> Static methods cannot be overridden
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

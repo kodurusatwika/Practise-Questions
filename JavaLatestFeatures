@@ -1,0 +1,153 @@
+1. You are writing a utility method that processes a collection of numeric values.
+  ● How would you restrict the generic type to only numbers?
+   Generics let us write code that works with different data types safely.
+   They prevent wrong types at compile time.
+   If I want only numbers, I use <T extends Number> so non-numeric types are not allowed.
+Example code
+------------
+public class Example{
+    public static<T extends Number> void PrintNumber(T value){
+        System.out.println(value);
+    }
+    public static void main(String[] args){
+        PrintNumber(10);
+        PrintNumber(15.0);
+        PrintNumber(100L);
+    }
+}
+●Explain when to use <? extends Number> vs <? super Integer>.
+<? extends Number> is used when I only need to read numbers from a collection (like calculating sum or average).
+<? super Integer> is used when I need to add Integer values into a collection.
+Simple rule: extends = read, super = write
+
+Give one practical use case for each.
+<? extends Number> 
+static void readNumbers(List<? extends Number> list) {
+    for (Number n : list) {
+        System.out.println(n);
+    }
+} Used when only reading numbers (like sum, print)
+
+<? super Integer>
+static void addNumbers(List<? super Integer> list) {
+    list.add(1);
+    list.add(2);
+}Used when only adding Integer values (like IDs).
+
+2)Java introduced records to simplify data-carrying classes.
+● What problems do records solve compared to traditional POJOs?
+> Records remove boilerplate code.
+In a normal POJO, we have to write constructors, getters, equals(), hashCode(), and toString().
+A record generates all of this automatically, making the code shorter, cleaner, and less error-prone.
+
+● When would you not use a record?
+> I would not use a record when the class needs to be mutable, meaning its values must change after creation.
+I also wouldn’t use it if the class needs complex business logic, inheritance, or custom setters.
+Records are mainly meant for simple, immutable data-holding classes.
+
+3) What is a functional interface?
+● Name two built-in functional interfaces.
+> A functional interface is an interface that contains exactly one abstract method.
+Because it has only one method, it can be implemented using a lambda expression.
+Examples of built-in functional interfaces are Runnable, Comparator, Callable and Predicate
+
+Show how a lambda expression improves readability compared to an anonymous class
+Using anonymous class (old way)
+--------------------------------
+Runnable r = new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("Hello");
+    }
+};
+Using lambda expression (new way)
+--------------------------------
+Runnable r = () -> System.out.println("Hello");
+
+Lambda expressions remove boilerplate code like class creation and method overrides, making the code shorter, cleaner, and easier to read.
+
+4) What is a Stream in Java?
+A Stream in Java is a way to process data from a collection in a functional style.
+It allows operations like filtering, mapping, and sorting without changing the original data.
+Stream does not store data, it processes data.
+
+● How is it different from a collection?
+A collection stores data, whereas a stream processes data.
+Collections are data structures like List or Set, but streams are used only for operations on that data.
+
+● Explain the difference between intermediate and terminal operations.
+Intermediate operations
+-----------------------
+Intermediate operations transform the stream and return another stream.
+They do not execute immediately.
+Examples: filter(), map(), sorted()
+Terminal Operation
+------------------
+Terminal operations trigger the execution of the stream and produce a result.
+Examples: forEach(), collect(), count()
+
+● Why are streams considered lazy?
+Streams are lazy because intermediate operations are not executed until a terminal operation is called.
+
+5) Given a list of employee objects:
+>  Which stream operations would you use to filter employees by department?
+I use the filter() operation to select employees belonging to a specific department
+
+> How would you transform employee names to uppercase?
+I use the map() operation to transform employee names to uppercase
+
+Example Code
+------------
+import java.util.List;
+import java.util.stream.Collectors;
+
+class Employee {
+    String name;
+    String department;
+
+    Employee(String name, String department) {
+        this.name = name;
+        this.department = department;
+    }
+}
+
+public class Example {
+    public static void main(String[] args) {
+
+        List<Employee> employees = List.of(
+            new Employee("John", "IT"),
+            new Employee("Alice", "HR"),
+            new Employee("Bob", "IT")
+        );
+
+        // Filter by department
+        List<Employee> itEmployees = employees.stream()
+            .filter(e -> e.department.equals("IT"))
+            .collect(Collectors.toList());
+
+        //Convert names to uppercase
+        List<String> upperNames = employees.stream()
+            .map(e -> e.name.toUpperCase())
+            .collect(Collectors.toList());
+
+        System.out.println(upperNames);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

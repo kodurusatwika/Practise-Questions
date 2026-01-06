@@ -1,0 +1,115 @@
+1. Yo need to store a list of customer IDs where
+      Order of insertion must be preserved 
+      Duplicate IDs are allowed
+> Which Java collection would you use and why?
+I would use an ArrayList because it keeps elements in the order they are added and allows duplicate customer IDs, which matches the requirement exactly.
+Example code
+------------
+import java.util.ArrayList;
+import java.util.List;
+public class CustomerExample{
+    public static void main(String[] args){
+        List<Integer> customerIds = new ArrayList<>();
+        customerIds.add(101);
+        customerIds.add(102);
+        customerIds.add(101);
+        customerIds.add(102);
+        
+        System.out.println(customerIds);
+    }
+}
+> What would change if duplicates were not allowed?
+If duplicates are not allowed but insertion order must be maintained, I would switch to a LinkedHashSet. It automatically removes duplicates while still keeping the order in which customer IDs were added.
+Example code
+------------
+import java.util.LinkedHashSet;
+import java.util.Set;
+public class CustomerExample{
+    public static void main(String[] args){
+        Set<Integer> customerIds = new LinkedHashSet<>();
+        customerIds.add(101);
+        customerIds.add(102);
+        customerIds.add(101);
+        customerIds.add(102);
+        
+        System.out.println(customerIds);
+    }
+}
+
+2) In a multi-threaded application, multiple threads update a shared collection.
+● Why are normal collections like ArrayList or HashMap not thread-safe?
+> ArrayList and HashMap are not thread-safe because they don’t handle multiple threads updating them at the same time.
+  If two threads modify the collection together, data can get corrupted, updates can be lost, or the program may behave unpredictably.
+  There’s no internal locking, so concurrent access causes issues
+
+● Name one thread-safe collection in Java.
+> One commonly used thread-safe collection is ConcurrentHashMap.
+It allows multiple threads to read and write safely without corrupting data
+
+●  When would you prefer a Concurrent collection over Collections.synchronizedList()?
+I prefer concurrent collections when many threads are accessing the collection at the same time and performance matters.
+synchronizedList() uses a single lock, so only one thread can access it at a time, which slows the system.
+Concurrent collections allow better parallel access and scale much better in multi-threaded applications.
+
+3)If an ArrayList is initialized with a size of 25 and a 26th element is added, what happens internally?
+> When an ArrayList is initialized with a size of 25, it means the internal array can hold 25 elements.
+When the 26th element is added, the existing array is full, so ArrayList automatically creates a new, larger array.
+It increases the capacity to about 1.5 times the old size, copies all existing elements into the new array, and then adds the new element.
+ArrayList growth = oldCapacity + (oldCapacity / 2)
+The old capacity is 25, so the new capacity becomes 25 + (25 / 2) = 37.
+Example code
+------------
+import java.util.ArrayList;
+
+public class ArrayExample{
+    public static void main(String[] args){
+        ArrayList<Integer> list = new ArrayList<>(25);
+        for(int i = 1; i<=25; i++){
+            list.add(i);
+        }
+        list.add(26);
+        System.out.println("NewArray : " + list.size());
+        System.out.println("Elements : " + list);
+        
+        
+    }
+}
+
+4) You are given a list of employee names where:
+    ●Names may repeat
+    ●Case should be treated as same ("John" and "john")
+Your task is to:
+1.Remove duplicates
+2.Preserve the original insertion order
+3.Print the unique employee names
+Input: ["John", "Alice", "john", "Bob", "Alice", "BOB"]
+
+“I used a LinkedHashSet because it removes duplicates and preserves insertion order.
+To handle case-insensitive duplicates like ‘John’ and ‘john’, I converted each name to lowercase before adding it to the set.”
+Example code
+------------
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+public class RemoveDuplicates {
+    public static void main(String[] args) {
+
+        String[] names = {"John", "Alice", "john", "Bob", "Alice", "BOB"};
+
+        Set<String> unique = new LinkedHashSet<>();
+
+        for (String name : names) {
+            unique.add(name.toLowerCase());
+        }
+
+        System.out.println(unique);
+    }
+}
+
+
+
+
+
+
+
+

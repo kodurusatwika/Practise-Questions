@@ -1,0 +1,114 @@
+1. What is the difference between creating a thread using Thread, Runnable, and ExecutorService?
+Threads 
+----------
+Thread directly runs the task, but design is poor.
+
+Runnable
+-------------
+Runnable is better than Thread because it separates the task from the thread.
+
+ExecutorService
+-------------------
+ExecutorService manages threads automatically using a thread pool.
+
+● Which approach is preferred in real applications and why?
+ExecutorService is preferred in real applications because it manages thread creation, reuse, and lifecycle efficiently, improves performance, and avoids creating too many threads.
+
+● What problems does ExecutorService solve compared to manual thread creation?
+Manual thread creation can create too many threads, waste resources, and is hard to manage.
+ExecutorService solves this by using thread pools, controlling the number of threads, reusing them, and handling task scheduling
+
+2. You submit a task using ExecutorService.submit().
+● What does the submit() method return?
+The submit method returns a Future, which represents the result of the task.
+
+● How do you retrieve the result of the task?
+I retrieve the result by calling the get() method on the Future object.
+
+● What happens if Future.get() is called before the task is complete?
+If Future.get() is called before the task completes, the current thread waits until the result is available.
+
+3. Why is synchronization required in multi-threaded programs?
+Synchronization is required to prevent multiple threads from accessing shared data at the same time.
+
+●Explain the purpose of wait() and notify(). Show via an example
+wait(): Used to pause a thread until some condition is met.
+notify(): Used to wake up a waiting thread after the condition is satisfied.
+Example
+-------
+class Number{
+    synchronized void printOdd(int n) throws InterruptedException{
+        if(n % 2 == 0){
+            wait();
+        }
+        System.out.println(n);
+        notify();
+    }
+}
+
+● Why must they be called inside a synchronized block?
+wait() and notify() must be called inside a synchronized block because they work on the object’s lock.
+Synchronization ensures the thread owns the lock before calling wait() or notify().
+Without synchronization, Java doesn’t know which lock the thread is using, so it throws an error.
+
+4) Why are collections like ArrayList and HashMap not thread-safe?
+ArrayList and HashMap are not thread-safe because they do not control concurrent access.
+If multiple threads modify them at the same time, data can get corrupted, updates can be lost, or unexpected results can occur.
+
+> Name one thread-safe collection.
+One thread-safe collection is ConcurrentHashMap
+
+>  would you prefer ConcurrentHashMap over Collections.synchronizedMap()?
+I prefer ConcurrentHashMap when performance and scalability are important in a multi-threaded environment.
+
+5)What is a deadlock in Java?
+A deadlock occurs when two or more threads are waiting for each other to release resources, and none of them can proceed.
+
+Explain a real-world scenario where a deadlock can occur. Can you show a piece of code where a deadlock can potentially occur.
+Simple real-world example
+Imagine two people and two resources.
+> Person A holds Key-1 and needs Key-2
+> Person B holds Key-2 and needs Key-1
+Both are waiting for each other to release the key.
+Neither can proceed.
+This situation is called a deadlock.
+code
+----
+class DeadlockExample {
+
+    static final Object lock1 = new Object();
+    static final Object lock2 = new Object();
+
+    public static void main(String[] args) {
+
+        Thread t1 = new Thread(() -> {
+            synchronized (lock1) {
+                System.out.println("Thread 1: Holding lock1");
+                try { Thread.sleep(100); } catch (Exception e) {}
+                synchronized (lock2) {
+                    System.out.println("Thread 1: Holding lock2");
+                }
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            synchronized (lock2) {
+                System.out.println("Thread 2: Holding lock2");
+                try { Thread.sleep(100); } catch (Exception e) {}
+                synchronized (lock1) {
+                    System.out.println("Thread 2: Holding lock1");
+                }
+            }
+        });
+
+        t1.start();
+        t2.start();
+    }
+}
+
+Mention one way to prevent deadlocks in applications
+One way to prevent deadlocks in applications is to always acquire locks in a consistent order across all thread.
+
+
+
+

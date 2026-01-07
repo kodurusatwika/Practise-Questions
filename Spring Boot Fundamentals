@@ -1,0 +1,70 @@
+1. You are migrating a legacy project in monolithic architecture to microservice based architecture using Spring Boot for faster deployments and environment-specific configs.
+> How does auto-configuration simplify bean creation compared to manual XML configs?
+In Spring Boot, auto-configuration automatically creates required beans based on the libraries present in the project.
+We don’t need to write XML files or manually define beans.
+Spring Boot checks the classpath and configures things automatically.
+Example: 
+If we add a database dependency, Spring Boot automatically creates DataSource, EntityManager, etc.
+
+> When would you exclude an auto-configuration class? Give an example.
+Exclude means telling Spring Boot not to auto-create some default beans.
+We exclude auto-configuration when we don’t need that feature or when we want our own custom configuration.
+For example, if a microservice does not use a database, we exclude database auto-configuration to avoid unnecessary beans and startup errors.
+
+How do you activate profile-specific beans?
+Profile-based beans are used to separate configuration for different environments like development, testing, and production.
+
+2. Can you explain these concepts in Spring Boot?
+ > What is Dependency Injection (DI), and how does it reduce coupling in Spring applications?
+Dependency Injection (DI) means Spring creates and manages objects and injects them automatically into required classes.
+It reduces coupling because classes do not create their own dependencies; instead, Spring provides them.
+In Spring Boot, DI is achieved using the IoC container through constructor, setter, or field injection.
+
+> Explain the roles of common annotations: @Component, @Service, @Repository, @Controller / @RestController, and how component scanning discovers them.
+@Component: @Component is a general-purpose annotation used to mark any class as a Spring bean.
+@Service: @Service is used for business logic classes.
+@Repository: @Repository is used for database access classes.
+It also helps in handling database exceptions.
+@Controller: @Controller is used to handle HTTP requests and return views like HTML pages.
+@RestController: @RestController is used to handle HTTP requests and return JSON data as a response.
+
+> When would you use @Autowired vs constructor injection? Why is constructor injection generally preferred?
+@Autowired injects dependencies directly into fields and is okay for small or quick code.
+Constructor injection passes dependencies through the constructor and is preferred because it makes dependencies clear and easier to test.
+
+> How do @Qualifier and @Primary help resolve bean ambiguity? Provide an example.
+@Primary resolves ambiguity by setting a default bean, and @Qualifier resolves it by explicitly specifying which bean to inject.
+Suppose I have two beans of the same type, like CreditCardPayment and UPIPayment.
+If I mark CreditCardPayment as @Primary, Spring will choose it by default.
+If I want to use UPIPayment instead, I use @Qualifier to tell Spring exactly which bean to inject.
+
+ 
+3. Your team needs to externalize secrets and rotate them without redeploying the app.
+> How do application.yml and profile-specific configs work together?
+application.yml contains common configuration for all environments.
+Profile-specific files like application-dev.yml or application-prod.yml contain environment-specific values.
+
+> What’s a secure approach for managing secrets in Spring Boot?
+Spring Boot reads secrets from environment variables or secret managers, so secrets can be rotated without restarting the app.
+
+> How would you structure configs for multi-region deployments?
+For multi-region deployment, configurations are separated by environment and region.
+
+4. A batch job must run every 10 seconds and stop gracefully during scale-down.
+> Which annotations enable scheduling? How do you restrict it to certain profiles?
+Scheduling in Spring Boot is enabled using @EnableScheduling.
+The actual job method is marked with @Scheduled to run every 10 seconds.
+
+> Which lifecycle hooks help with graceful shutdown?
+Lifecycle hooks allow the batch job to complete its current execution before the app shuts down.
+
+> How would you monitor this job using Actuator?
+Actuator helps monitor health, metrics, and job status so we know the batch job is running correctly.
+
+
+
+
+
+
+
+

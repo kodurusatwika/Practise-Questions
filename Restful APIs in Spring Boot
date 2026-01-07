@@ -1,0 +1,80 @@
+1. You are designing a Product Service that exposes CRUD APIs without leaking JPA
+entities.
+> Why use DTOs instead of entities? How do you map between them?
+DTO is used to safely send data to the client without exposing database structure.
+We manually copy values or use a mapper to convert between entity and DTO.
+
+> Where should validation occur—controller or service?
+Basic input validation is done in the controller, and business rule validation is done in the service layer.
+
+> How do you keep controllers thin and services fat?
+Controllers handle only HTTP requests and responses, while all business logic is kept in the service layer
+
+> Which annotations (@RestController, @RequestMapping, @RequestParam) are essential for clean API design?
+@RestController is used to create REST APIs,
+@RequestMapping defines API URLs,
+and @RequestParam is used to read query parameters.
+
+2.Clients demand consistent error responses and backward-compatible contracts.
+>  How do you implement global error handling using @ControllerAdvice and @ExceptionHandler?
+We use @ControllerAdvice to handle exceptions centrally for all controllers.
+@ExceptionHandler is used inside it to catch specific exceptions and return a proper error response.
+
+> What should a standard error payload include (fields like timestamp, path, code,message)?
+A standard error response should include:
+Timestamp – when the error happened
+Path – which API was called
+Status code – HTTP error code
+Error message – what went wrong
+This gives clients a clear and consistent error format.
+
+> How do you plan API versioning and deprecation for long-term stability?
+API versioning allows backward compatibility by keeping old APIs active while introducing new versions and deprecating them slowly.
+
+>  How would you return custom HTTP status codes using ResponseEntity?
+We use ResponseEntity to return both response data and the correct HTTP status code.
+If data is created, we return 201 Created.
+If data is not found, we return 404 Not Found.
+If input is invalid, we return 400 Bad Request.
+
+3. A Create Order endpoint must be idempotent and resilient to downstream delays.
+>  How do you implement idempotency keys and deduplication logic?
+We use an idempotency key sent by the client with the request.
+The server stores this key with the request result.
+If the same key comes again, we return the old result instead of creating a new order.
+
+> How would you add timeouts/retries and a circuit breaker using Resilience4j?
+We use timeouts so the service does not wait too long.
+We use retries to retry failed calls a few times.
+We use a circuit breaker to stop calling a failing service and protect the system.
+
+> What’s the best way to return 202 Accepted with polling or webhooks for async flows?
+When processing takes time, we return 202 Accepted immediately.
+The client can poll a status API or receive updates through a webhook once processing is complete.
+
+>  How do you handle partial failures gracefully in distributed systems?
+We make sure one service failure does not break the whole flow by using retries, fallbacks, and compensation logic to handle failures smoothly.
+
+4. You are asked to implement backend validations for a POST API that accepts user details.
+>  Why are validations critical for API security and data integrity?
+Validations ensure only correct and safe data is accepted by the API.
+They protect the database from invalid or malicious input and maintain data integrity.
+Frontend validation can be bypassed, so backend validation is mandatory.
+
+>  How do you use @Valid and constraint annotations like @NotBlank, @Size in DTOs?
+Validation rules are defined in the DTO using annotations like @NotBlank and @Size.
+The controller uses @Valid to automatically check these rules before processing the request.
+
+> How do you propagate validation errors to clients in a structured way?
+Validation errors are handled centrally and returned in a consistent error response containing status code and error messages.
+This makes it easy for clients to understand and fix the request.
+
+> What happens if validation fails—how do you customize the error response?
+When validation fails, Spring stops the request before it reaches the controller logic and returns a 400 Bad Request.
+
+
+
+
+
+
+

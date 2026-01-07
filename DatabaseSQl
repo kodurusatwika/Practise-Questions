@@ -1,0 +1,53 @@
+1. You are modeling Orders and OrderItems with Users owning orders in a Spring Boot application.
+> Which JPA relationships would you use and why (One-to-Many, Many-to-One)?
+A user can have many orders, so we use One-to-Many from User to Order.
+Each order belongs to one user, so we use Many-to-One.
+An order can have many order items, so we use One-to-Many from Order to OrderItem.
+
+> How do you handle cascading and orphan removal for OrderItems?
+We use cascading so OrderItems are saved or deleted automatically with the Order.
+Orphan removal ensures that removed OrderItems are deleted from the databas
+
+> How would you enforce status transitions (e.g., PENDING → PAID → SHIPPED) at the entity level?
+We allow only valid status changes like PENDING to PAID and PAID to SHIPPED, and block invalid transitions.
+
+> What annotations (@Entity, @Table, @JoinColumn) are essential for mapping?
+@Entity maps the class to a table,
+@Table defines the table name,
+and @JoinColumn defines foreign key relationships.
+
+2. Two users try to purchase the last item simultaneously in your e-commerce system.
+>  How do you define transaction boundaries using @Transactional?
+We use @Transactional on the service method so all database operations run as one unit. If anything fails, the transaction is rolled back.
+
+> Which isolation level would you choose and why (READ COMMITTED vs SERIALIZABLE)?
+I would use READ COMMITTED for better performance and to avoid dirty reads. 
+For very critical stock updates, SERIALIZABLE can be used to fully prevent conflicts.
+
+> Would you use optimistic or pessimistic locking? How do you implement it in JPA?
+I would use optimistic locking because conflicts are rare and performance is better.
+It is implemented using a version field in the entity.
+
+> How do you handle deadlocks or retries gracefully?
+We handle deadlocks by retrying the transaction and keeping transactions short.
+Proper error handling ensures the user gets a clear message if retry fails.
+
+3. You need to implement auditing for createdBy and updatedBy fields in all entities.
+> Which annotations and listeners help achieve this (@CreatedBy, @LastModifiedBy)?
+We use @CreatedBy to store who created the record and @LastModifiedBy to store who last updated it.
+These work with JPA auditing listeners to automatically fill these fields
+
+>  How do you integrate Spring Security context for user info in auditing?
+We read the logged-in user from the Spring Security context and provide it to the auditing system.
+This way, the current user is automatically stored in createdBy and updatedBy.
+
+>  What limitations exist with detached entities and auditing updates?
+Auditing does not work properly for detached entities because JPA is not tracking them.
+The entity must be managed by JPA for auditing fields to update automatically.
+
+> How do you enable JPA auditing globally in a Spring Boot project?
+We enable JPA auditing globally using a configuration annotation so auditing works for all entities.
+
+
+
+
